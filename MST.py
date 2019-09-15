@@ -103,7 +103,7 @@ class graph:
                 stack.append(nodes[i])
         return self.tour
     
-    def getTour_nnHeuristic(self):
+    def getTour_nChildHeuristic(self):
         stack = []
         self.tour = []
         nodes = np.asarray(list(self.tree.keys()))
@@ -113,6 +113,45 @@ class graph:
             parents[i] = -1
         while len(stack) > 0:
             node = stack.pop(-1)
+            self.tour.append(node)
+            childs = []
+            for i in np.where((parents == node) == True)[0]:
+                dist = self.tspP.wfunc(node, nodes[i])
+                childs.append([dist, nodes[i]])
+            for dist, child in sorted(childs, reverse = True):
+                stack.append(child)
+        return self.tour
+    
+    def getTour_nnHeuristic(self):
+        stack = []
+        self.tour = []
+        nodes = np.asarray(list(self.tree.keys()))
+        parents = np.asarray(list(self.tree.values()))
+        for i in np.where((nodes == parents) == True)[0]:
+            stack.append(nodes[i])
+            parents[i] = -1
+        while len(stack) > 0:
+            if len(self.tour) > 0:
+                cNode = self.tour[-1]
+                stackParents = []
+                for i in stack:
+                    if self.tree[i] == i:
+                        stackParents.append(-1)
+                    else:
+                        stackParents.append(self.tree[i])
+                if np.where(stackParents == self.tree[cNode])[0].size > 0 :
+                    nextNodes = []
+                    for i in np.where(stackParents == self.tree[cNode])[0]:
+                        nextNodes.append(stack[i])
+                    nodeDistances = [[self.tspP.wfunc(i,cNode), i] for i in nextNodes]
+                    nodeDistances = sorted(nodeDistances)
+                    minDistNode = nodeDistances[0][1]
+                    node = stack.pop(np.where(stack == minDistNode)[0][0])
+                else:
+                    node = stack.pop(-1)
+            else:
+                node = stack.pop(-1)
+                
             self.tour.append(node)
             childs = []
             for i in np.where((parents == node) == True)[0]:
