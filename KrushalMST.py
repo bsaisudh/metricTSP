@@ -88,9 +88,9 @@ class graph:
                     self.tree[ edges [ childEdge[0] ] [ int(not(childEdge[1])) ] ] = node
                     edges[childEdge[0],:] = [-1, -1]
                 
-    def getTour(self):
+    def getTour_NoHeuristic(self):
         stack = []
-        tour = []
+        self.tour = []
         nodes = np.asarray(list(self.tree.keys()))
         parents = np.asarray(list(self.tree.values()))
         for i in np.where((nodes == parents) == True)[0]:
@@ -98,10 +98,34 @@ class graph:
             parents[i] = -1
         while len(stack) > 0:
             node = stack.pop(-1)
-            tour.append(node)
+            self.tour.append(node)
             for i in np.where((parents == node) == True)[0]:
                 stack.append(nodes[i])
-        return tour
-            
+        return self.tour
+    
+    def getTour_nnHeuristic(self):
+        stack = []
+        self.tour = []
+        nodes = np.asarray(list(self.tree.keys()))
+        parents = np.asarray(list(self.tree.values()))
+        for i in np.where((nodes == parents) == True)[0]:
+            stack.append(nodes[i])
+            parents[i] = -1
+        while len(stack) > 0:
+            node = stack.pop(-1)
+            self.tour.append(node)
+            childs = []
+            for i in np.where((parents == node) == True)[0]:
+                dist = self.tspP.wfunc(node, nodes[i])
+                childs.append([dist, nodes[i]])
+            for dist, child in sorted(childs):
+                stack.append([child])
+        return self.tour
+    
+    def calcTourLength(self):
+        tourLength = 0
+        for i in range(len(self.tour)-1):
+            tourLength += self.tspP.wfunc(self.tour[i],self.tour[i+1])
+        return tourLength
             
         
