@@ -17,7 +17,8 @@ def distance(a,b):
 
 disp = display()
 
-p = tsp.utils.load_problem("Data/test.tsp", special = distance)
+p = tsp.utils.load_problem("Data/eil51.tsp", special = distance)
+#p = tsp.utils.load_problem("Data/test.tsp", special = distance)
 p.edge_weight_type = 'SPECIAL'
 p.special = distance
 s = tsp.utils.load_solution("Data/eil51.out.tour")
@@ -31,5 +32,6 @@ print(len(list(p.get_edges())))
 print(p.wfunc(1,2))
 
 graphMST = graph(p)
-graphMST.krushalMST(disp)
+graphMST.krushalMSTEdges(disp)
+graphMST.genTree()
 disp.addTour(p.node_coords,graphMST.getTour())

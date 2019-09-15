@@ -35,25 +35,25 @@ class graph:
             dist = self.tspP.wfunc(n1,n2)
             heappush(self.heapGraph, (dist, n1, n2))
     
-    def findParent(self, node):
+    def findGrandParent(self, node):
         if self.parent[node] == node:
             return node
         else:
-            return self.findParent(self.parent[node])
+            return self.findGrandParent(self.parent[node])
     
     def union(self, n1, n2):
-        n1parent = self.findParent(n1)
-        n2parent = self.findParent(n2)
+        n1Gparent = self.findGrandParent(n1)
+        n2Gparent = self.findGrandParent(n2)
         
-        if self.rank[n1parent] > self.rank[n2parent]:
-            self.parent[n2parent] = n1parent
-        elif self.rank[n1parent] < self.rank[n2parent]:
-            self.parent[n1parent] = n2parent
+        if self.rank[n1Gparent] > self.rank[n2Gparent]:
+            self.parent[n2Gparent] = n1Gparent
+        elif self.rank[n1Gparent] < self.rank[n2Gparent]:
+            self.parent[n1Gparent] = n2Gparent
         else:
-            self.parent[n2parent] = n1parent
-            self.rank[n1parent] += 1
+            self.parent[n2Gparent] = n1Gparent
+            self.rank[n1Gparent] += 1
     
-    def krushalMST(self, disp :display):
+    def krushalMSTEdges(self, disp :display):
         self.result = []
         self.mstCost = math.nan
         self.initHeapGraph()
@@ -61,20 +61,38 @@ class graph:
         
         while len(self.result) < self.v - 1:
             [w, n1, n2] = heappop(self.heapGraph)
-            n1parent = self.findParent(n1)
-            n2parent = self.findParent(n2)
-            if n1parent != n2parent:
+            n1Gparent = self.findGrandParent(n1)
+            n2Gparent = self.findGrandParent(n2)
+            if n1Gparent != n2Gparent:
                 self.result.append((w, n1, n2))
-                self.union(n1parent,n2parent)
+                self.union(n1Gparent,n2Gparent)
                 disp.addEdge(self.tspP.node_coords[n1], self.tspP.node_coords[n2])
         self.mstCost = sum([i[0] for i in self.result])
         print("MST cost : ", self.mstCost)
+        
+    def genTree(self):
+        stack = []
+        self.tree = dict()
+        edges = np.asarray([[n1,n2] for w,n1,n2 in self.result])
+        nodes = np.asarray(list(self.parent.keys()))
+        parents = np.asarray(list(self.parent.values()))
+        for i in np.where((nodes == parents) == True)[0]:
+            stack.append(nodes[i])
+            self.tree[nodes[i]] = nodes[i]
+        while len(stack) > 0:
+            node = stack.pop(-1)
+            childEdges = np.where(edges == node)
+            if childEdges[0].size > 0 :
+                for childEdge in zip(childEdges[0],childEdges[1]):
+                    stack.append( edges [ childEdge[0] ] [ int(not(childEdge[1])) ] )
+                    self.tree[ edges [ childEdge[0] ] [ int(not(childEdge[1])) ] ] = node
+                    edges[childEdge[0],:] = [-1, -1]
                 
     def getTour(self):
         stack = []
         tour = []
-        nodes = np.asarray(list(self.parent.keys()))
-        parents = np.asarray(list(self.parent.values()))
+        nodes = np.asarray(list(self.tree.keys()))
+        parents = np.asarray(list(self.tree.values()))
         for i in np.where((nodes == parents) == True)[0]:
             stack.append(nodes[i])
             parents[i] = -1
