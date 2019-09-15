@@ -53,7 +53,7 @@ class graph:
             self.parent[n2Gparent] = n1Gparent
             self.rank[n1Gparent] += 1
     
-    def krushalMSTEdges(self, disp :display):
+    def kruskalMSTEdges(self, disp :display):
         self.result = []
         self.mstCost = math.nan
         self.initHeapGraph()
@@ -118,8 +118,8 @@ class graph:
             for i in np.where((parents == node) == True)[0]:
                 dist = self.tspP.wfunc(node, nodes[i])
                 childs.append([dist, nodes[i]])
-            for dist, child in sorted(childs):
-                stack.append([child])
+            for dist, child in sorted(childs, reverse = True):
+                stack.append(child)
         return self.tour
     
     def calcTourLength(self):
