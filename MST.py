@@ -200,16 +200,13 @@ class graph:
                 for b in range(a+1, len(order)):
                     new_order = order[:a] + order[a:b][::-1] + order[b:]
                     new_length = self.calcTourLength_(new_order)
-
                     if new_length < length:
                         length = new_length
                         order = new_order
                         changed = True
-
         if length < best_length:
             best_length = length
             self.tour = order
-
         return self.tour
 
     def calcTourLength_(self, tour):
@@ -229,5 +226,18 @@ class graph:
         for i in range(len(closedTour)-1):
             tourLength += self.tspP.wfunc(closedTour[i], closedTour[i+1])
         return tourLength
-            
+    
+    def writeTourFile(self,filename):
+        header = f'''NAME : {filename}
+COMMENT : Optimal tour for {filename} (tourLength = {self.calcTourLength()})
+TYPE : TOUR
+DIMENSION : {len(self.tour)}
+TOUR_SECTION
+'''
+        with open(f"{filename.split('.')[0]}.out.tour",'w+') as f:
+            f.write(header)
+            for i in self.tour:
+                f.write(f'{i}\n')
+            f.write('-1\n')
+            f.write('EOF')
         
