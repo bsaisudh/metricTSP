@@ -52,8 +52,8 @@ disp0.addEdges(p, graphMST.result)
 #disp1.addTour(p.node_coords,graphMST.getTour_nnHeuristic())
 #print("Tour Length Nearest NN Heuristic: ", graphMST.calcTourLength())
 
-disp1.addTour(p.node_coords,graphMST.getTour_nnAtLeaf())
-print("Tour Length Nearest NN at leaf : ", graphMST.calcTourLength())
+#disp1.addTour(p.node_coords,graphMST.getTour_nnAtLeaf())
+#print("Tour Length Nearest NN at leaf : ", graphMST.calcTourLength())
 
-disp2.addTour(p.node_coords,graphMST.getTour_2opt())
-print("Tour Length 2 OPT : ", graphMST.calcTourLength())
+#disp2.addTour(p.node_coords,graphMST.getTour_2opt())
+#print("Tour Length 2 OPT : ", graphMST.calcTourLength())

@@ -9,10 +9,11 @@ import matplotlib.pyplot as plt
 
 class display:
     
-    def __init__(self, title):
+    def __init__(self, _title):
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)
-        self.ax.set_title(title)
+        self.title = _title
+        self.ax.set_title(_title)
         
     def addPoints(self,ptsDict):
         for v, pt in zip(ptsDict.keys(), ptsDict.values()):
@@ -42,4 +43,9 @@ class display:
             
     def addRootNode(self, pt):
         self.ax.scatter(pt[0],pt[1], s = 80, c='red', alpha=1)
+        plt.show()
+        
+    def displayTourLength(self, length):
+        self.ax.set_title(f'''{self.title}
+        Tour Length = {length}''')
         plt.show()
