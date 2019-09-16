@@ -9,6 +9,7 @@ import tsplib95 as tsp
 from heapq import heappush, heappop
 import math
 import numpy as np
+import copy
 
 from display import display
 
@@ -53,7 +54,7 @@ class graph:
             self.parent[n2Gparent] = n1Gparent
             self.rank[n1Gparent] += 1
     
-    def kruskalMSTEdges(self, disp :display):
+    def kruskalMSTEdges(self):
         self.result = []
         self.mstCost = math.nan
         self.initHeapGraph()
@@ -66,7 +67,6 @@ class graph:
             if n1Gparent != n2Gparent:
                 self.result.append((w, n1, n2))
                 self.union(n1Gparent,n2Gparent)
-                disp.addEdge(self.tspP.node_coords[n1], self.tspP.node_coords[n2])
         self.mstCost = sum([i[0] for i in self.result])
         print("MST cost : ", self.mstCost)
         
@@ -77,6 +77,7 @@ class graph:
         nodes = np.asarray(list(self.parent.keys()))
         parents = np.asarray(list(self.parent.values()))
         for i in np.where((nodes == parents) == True)[0]:
+            self.rootNode = i
             stack.append(nodes[i])
             self.tree[nodes[i]] = nodes[i]
         while len(stack) > 0:
@@ -151,7 +152,6 @@ class graph:
                     node = stack.pop(-1)
             else:
                 node = stack.pop(-1)
-                
             self.tour.append(node)
             childs = []
             for i in np.where((parents == node) == True)[0]:
@@ -161,10 +161,73 @@ class graph:
                 stack.append(child)
         return self.tour
     
+    def getTour_nnAtLeaf(self):
+        stack = []
+        self.tour = []
+        nodes = np.asarray(list(self.tree.keys()))
+        parents = np.asarray(list(self.tree.values()))
+        for i in np.where((nodes == parents) == True)[0]:
+            stack.append(nodes[i])
+            parents[i] = -1
+        childs = []
+        while len(stack) > 0:
+            if len(childs) == 0 and len(self.tour)>0:
+                cNode = self.tour[-1]
+                stackDist = [[self.tspP.wfunc(cNode,i), i] for i in stack]
+                stackDist = sorted(stackDist)
+                minDistNode = stackDist[0][1]
+                node = stack.pop(np.where(stack == minDistNode)[0][0])
+            else:
+                node = stack.pop(-1)
+            self.tour.append(node)
+            childs = []
+            for i in np.where((parents == node) == True)[0]:
+                dist = self.tspP.wfunc(node, nodes[i])
+                childs.append([dist, nodes[i]])
+            for dist, child in sorted(childs, reverse = True):
+                stack.append(child)
+                    
+        return self.tour
+    
+    def getTour_2opt(self):
+        best_length = float('inf')
+        changed = True
+        order = copy.deepcopy(self.tour)
+        length = self.calcTourLength_(order)
+        while changed:
+            changed = False
+            for a in range(-1, len(order)):
+                for b in range(a+1, len(order)):
+                    new_order = order[:a] + order[a:b][::-1] + order[b:]
+                    new_length = self.calcTourLength_(new_order)
+
+                    if new_length < length:
+                        length = new_length
+                        order = new_order
+                        changed = True
+
+        if length < best_length:
+            best_length = length
+            self.tour = order
+
+        return self.tour
+
+    def calcTourLength_(self, tour):
+        tourLength = 0
+        closedTour = []
+        closedTour.extend(tour)
+        closedTour.append(tour[0])
+        for i in range(len(closedTour)-1):
+            tourLength += self.tspP.wfunc(closedTour[i], closedTour[i+1])
+        return tourLength
+    
     def calcTourLength(self):
         tourLength = 0
-        for i in range(len(self.tour)-1):
-            tourLength += self.tspP.wfunc(self.tour[i],self.tour[i+1])
+        closedTour = []
+        closedTour.extend(self.tour)
+        closedTour.append(self.tour[0])
+        for i in range(len(closedTour)-1):
+            tourLength += self.tspP.wfunc(closedTour[i], closedTour[i+1])
         return tourLength
             
         
