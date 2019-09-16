@@ -49,3 +49,6 @@ class display:
         self.ax.set_title(f'''{self.title}
         Tour Length = {length}''')
         plt.show()
+    
+    def saveFigure(self,filepath):
+        self.fig.savefig(f'{filepath.split(".")[0]}/{self.title}.png')

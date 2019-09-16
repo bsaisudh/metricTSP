@@ -6,6 +6,7 @@ Created on Mon Sep 16 10:23:56 2019
 """
 
 import tsplib95 as tsp
+import time
 
 from display import display
 from MST import graph
@@ -33,12 +34,12 @@ def FindTSPTour(filename):
               "2-OPT over NN at Leaf"]:
         disp.append(display(f'{filename} - {title}'))
         
-    dispMST = display("MST")
+    dispMST = display(f'{filename} - MST')
     
+    print(f'File Name : {filename}')
     print("Number of Nodes: ", len(list(p.get_nodes())))
     print("Number of Edges: ", len(list(p.get_edges())))
     print("Distance between nodes (1,2): ", p.wfunc(1,2))
-    
     
     graphMST.kruskalMSTEdges()
     graphMST.genTree()
@@ -53,18 +54,23 @@ def FindTSPTour(filename):
     
     tourLengths = []
     for h, d in zip(heuristics, disp):
+        t = time.time()
         d.addTour(p.node_coords,h())
         length = graphMST.calcTourLength()
         tourLengths.append(length)
-        print(f'{d.title} : {length}')
+        print(f'{d.title} : {length:.3f}')
+        print(f'{d.title} : Time - {(time.time() - t):.3f} S')
         d.displayTourLength(length)
         
     graphMST.writeTourFile(filename)
         
+    dispMST.saveFigure("Results/Images")
+    for d in disp:
+        d.saveFigure("Results/Images")
+
     return tourLengths
-
-
 
 
 if __name__ == '__main__':
     FindTSPTour('Data/Random/100RandomPoints.tsp')
+        

@@ -19,8 +19,8 @@ disp0 = display("MST")
 disp1 = display("NN Neighbour")
 disp2 = display("2 Opt")
 
-p = tsp.utils.load_problem("Data/eil101.tsp", special = distance)
-#p = tsp.utils.load_problem("Data/test.tsp", special = distance)
+#p = tsp.utils.load_problem("Data/eil101.tsp", special = distance)
+p = tsp.utils.load_problem("Data/test.tsp", special = distance)
 p.edge_weight_type = 'SPECIAL'
 p.special = distance
 s = tsp.utils.load_solution("Data/eil51.out.tour")

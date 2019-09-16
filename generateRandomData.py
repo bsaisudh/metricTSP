@@ -30,25 +30,24 @@ def generateX_u(n,m):
     return X
 
 def TSPfileWrite(filename,n,m):
-    with open(f'Data/Random/{filename}.tsp','w+') as f:
-        f.write(header)
-        for i,pt in enumerate(generateX_u(n,m)):
-            f.write(f'{i+1} {pt[0]:.2} {pt[1]:.2}\n')
-        f.write(f'EOF')
-
-n = 2
-m = 100
-
-filename = f'{m}RandomPoints'
-
-header = f'''NAME : {filename}
+    header = f'''NAME : {filename}
 COMMENT : {100} Random points test
 TYPE : TSP
 DIMENSION : {m}
 EDGE_WEIGHT_TYPE : EUC_2D
 NODE_COORD_SECTION
 '''
+    with open(f'Data/Random/{filename}.tsp','w+') as f:
+        f.write(header)
+        for i,pt in enumerate(generateX_u(n,m)):
+            f.write(f'{i+1} {pt[0]:.2f} {pt[1]:.2f}\n')
+        f.write(f'EOF')
 
 
-TSPfileWrite(filename,n,m)
+
+if __name__ == '__main__':
+    n = 2
+    m = 100
+    filename = f'{m}RandomPoints'
+    TSPfileWrite(filename,n,m)
 
