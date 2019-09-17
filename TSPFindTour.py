@@ -72,5 +72,5 @@ def FindTSPTour(filename):
 
 
 if __name__ == '__main__':
-    FindTSPTour('Data/Random/100RandomPoints.tsp')
+    FindTSPTour('Data/eli51.tsp')
         

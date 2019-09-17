@@ -12,7 +12,7 @@ def generateX(n,m):
     Xmu = [50]*n
     Xcov = np.diag([100]*n)
     X = np.random.multivariate_normal(Xmu, Xcov, m)
-    print ("shape of X : ", X.shape)
+#    print ("shape of X : ", X.shape)
     plt.plot(X[:,0], X[:,1], 'or')
     plt.show()
     return X
@@ -24,7 +24,7 @@ def generateX_u(n,m):
         X.append(np.random.uniform(low=10, high=100, size=m))
     X = np.asarray(X)
     X = X.T
-    print ("shape of X : ", X.shape)
+#    print ("shape of X : ", X.shape)
     plt.plot(X[:,0], X[:,1], 'or')
     plt.show()
     return X

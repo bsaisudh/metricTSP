@@ -77,7 +77,7 @@ class graph:
         nodes = np.asarray(list(self.parent.keys()))
         parents = np.asarray(list(self.parent.values()))
         for i in np.where((nodes == parents) == True)[0]:
-            self.rootNode = i
+            self.rootNode = nodes[i]
             stack.append(nodes[i])
             self.tree[nodes[i]] = nodes[i]
         while len(stack) > 0:

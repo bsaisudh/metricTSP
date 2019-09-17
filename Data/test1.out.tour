@@ -1,0 +1,14 @@
+NAME : Data/test1.tsp
+COMMENT : Optimal tour for Data/test1.tsp (tourLength = 20.970562748477143)
+TYPE : TOUR
+DIMENSION : 7
+TOUR_SECTION
+1
+2
+4
+5
+7
+6
+3
+-1
+EOF
