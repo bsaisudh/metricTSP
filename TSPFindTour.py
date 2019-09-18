@@ -64,13 +64,15 @@ def FindTSPTour(filename):
         
     graphMST.writeTourFile(filename)
         
-    dispMST.saveFigure("Results/Images")
-    for d in disp:
-        d.saveFigure("Results/Images")
+# =============================================================================
+#     dispMST.saveFigure("Results/Images")
+#     for d in disp:
+#         d.saveFigure("Results/Images")
+# =============================================================================
 
     return tourLengths
 
 
 if __name__ == '__main__':
-    FindTSPTour('Data/eli51.tsp')
+    FindTSPTour('Data/eil101.tsp')
         
